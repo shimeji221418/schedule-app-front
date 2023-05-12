@@ -13,5 +13,7 @@ const firebaseConfig = {
   appId: "1:126255154657:web:efebe203b7910e8135fea0",
 };
 
+// BASE_URL="https://schedule-app-backend.onrender.com"
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
