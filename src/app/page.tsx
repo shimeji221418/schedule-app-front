@@ -99,6 +99,11 @@ export default function Home() {
     }
   }, []);
 
+  // {
+  //   "typescript.tsdk": "node_modules/typescript/lib",
+  //   "typescript.enablePromptUseWorkspaceTsdk": true
+  // }
+
   return (
     <>
       {!loading && loginUser && (
