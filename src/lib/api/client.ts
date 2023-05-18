@@ -24,6 +24,7 @@ const baseClient = applyCaseMiddleware(
   }),
   options
 );
+// `${process.env.BASE_URL}/api/v1/`
 
 export const BaseClientWithoutAuth = (params: BaseClientWithoutAuthType) => {
   const { method, url, data } = params;
