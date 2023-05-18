@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCYvu-TvwJbrW0FTdS9fUHHPcDmKVK8gSA",
-  authDomain: "schedule-app-dfa57.firebaseapp.com",
-  projectId: "schedule-app-dfa57",
-  storageBucket: "schedule-app-dfa57.appspot.com",
-  messagingSenderId: "126255154657",
-  appId: "1:126255154657:web:efebe203b7910e8135fea0",
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APPID,
 };
 
 // BASE_URL="https://schedule-app-backend.onrender.com"
