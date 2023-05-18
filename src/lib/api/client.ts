@@ -20,7 +20,7 @@ const options = {
 
 const baseClient = applyCaseMiddleware(
   axios.create({
-    baseURL: `${process.env.BASE_URL}/api/v1/`,
+    baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/`,
   }),
   options
 );
