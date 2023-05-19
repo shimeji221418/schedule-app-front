@@ -9,6 +9,7 @@ import { EditUserType, GetUserType, LoginUserType } from "@/types/api/user";
 import {
   Box,
   Divider,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -43,11 +44,20 @@ type Props = {
   teams: Array<TeamType>;
   loginUser: LoginUserType;
   openPassModal: () => void;
+  openEmailModal: () => void;
 };
 
 const UserDetailModal: FC<Props> = memo((props) => {
-  const { isOpen, onClose, targetUser, auth, teams, loginUser, openPassModal } =
-    props;
+  const {
+    isOpen,
+    onClose,
+    targetUser,
+    auth,
+    teams,
+    loginUser,
+    openPassModal,
+    openEmailModal,
+  } = props;
   const [editUser, setEditUser] = useState<EditUserType>({
     id: 0,
     name: "",
@@ -85,33 +95,9 @@ const UserDetailModal: FC<Props> = memo((props) => {
     [editUser, setEditUser]
   );
 
-  // const handleEmailChange = async () => {
-  //   try {
-  //     if (auth.currentUser) {
-  //       const credential = EmailAuthProvider.credential(
-  //         auth.currentUser.email!,
-  //         editUser.password
-  //       );
-  //       await reauthenticateWithCredential(auth.currentUser, credential);
-  //       await updateEmail(auth.currentUser, editUser.email);
-  //     }
-  //   } catch (e: any) {
-  //     console.log(e);
-  //   }
-  // };
-
   const handleOnSubmit = () => {
     const request = async () => {
       try {
-        // await handleEmailChange();
-        if (auth.currentUser) {
-          const credential = EmailAuthProvider.credential(
-            auth.currentUser.email!,
-            editUser.password
-          );
-          await reauthenticateWithCredential(auth.currentUser, credential);
-          await updateEmail(auth.currentUser, editUser.email);
-        }
         if (auth.currentUser) {
           const token = await auth.currentUser.getIdToken(true);
           const data = {
@@ -148,19 +134,21 @@ const UserDetailModal: FC<Props> = memo((props) => {
 
   const isAdminCheck: boolean = loginUser?.role !== "admin";
 
+  const checkLoginUser: boolean = loginUser?.id === targetUser.id;
+
   return (
     <>
       {loginUser && (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent px={4}>
             <ModalHeader as="h1" textAlign="center">
               ユーザー詳細
             </ModalHeader>
             <ModalCloseButton />
             <form onSubmit={handleSubmit(handleOnSubmit)}>
               <ModalBody>
-                <Stack spacing={4}>
+                <Stack spacing={3}>
                   <InputForm
                     title="name"
                     name="name"
@@ -168,15 +156,6 @@ const UserDetailModal: FC<Props> = memo((props) => {
                     type="text"
                     handleChange={handleChange}
                     message="nameを入力してください"
-                    isReadOnly={isReadOnly}
-                  />
-                  <InputForm
-                    title="email"
-                    name="email"
-                    value={editUser.email}
-                    type="email"
-                    handleChange={handleChange}
-                    message="emailを入力してください"
                     isReadOnly={isReadOnly}
                   />
                   <SelectForm
@@ -203,27 +182,16 @@ const UserDetailModal: FC<Props> = memo((props) => {
               <ModalBody>
                 {!isReadOnly && (
                   <>
-                    <Box mt={10}>
+                    <Box mt={6}>
                       <Stack>
-                        <Text as="p" textAlign="end" fontSize="xs">
-                          ※ユーザー情報の更新にはパスワードが必要です
-                        </Text>
-                        <InputForm
-                          title="password"
-                          name="password"
-                          type="password"
-                          handleChange={handleChange}
-                          message="passwordを入力してください"
-                          isReadOnly={isReadOnly}
-                        />
                         {!isReadOnly && (
                           <FormButton type="submit" color="yellow" size="md">
                             edit
                           </FormButton>
                         )}
                       </Stack>
-                      {!isReadOnly && (
-                        <Divider borderColor="gray.400" mt={4} mb={4} />
+                      {checkLoginUser && (
+                        <Divider borderColor="gray.400" mt={6} mb={8} />
                       )}
                     </Box>
                   </>
@@ -231,14 +199,23 @@ const UserDetailModal: FC<Props> = memo((props) => {
               </ModalBody>
 
               <ModalFooter>
-                {!isReadOnly && (
-                  <PrimaryButton
-                    color="green"
-                    size="md"
-                    onClick={openPassModal}
-                  >
-                    Password変更はこちら
-                  </PrimaryButton>
+                {checkLoginUser && (
+                  <HStack spacing={4}>
+                    <PrimaryButton
+                      color="green"
+                      size="md"
+                      onClick={openPassModal}
+                    >
+                      Password変更へ
+                    </PrimaryButton>
+                    <PrimaryButton
+                      color="pink"
+                      size="md"
+                      onClick={openEmailModal}
+                    >
+                      email変更へ
+                    </PrimaryButton>
+                  </HStack>
                 )}
               </ModalFooter>
             </form>
