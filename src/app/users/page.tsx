@@ -21,12 +21,14 @@ import { TeamType } from "@/types/api/team";
 import UserDetailModal from "@/components/organisms/modal/UserDetailModal";
 import { useGetTeamUsers } from "@/hooks/useGetTeamUsers";
 import EditPasswordModal from "@/components/organisms/modal/EditPasswordModal";
+import EditEmailModal from "@/components/organisms/modal/EditEmailModal";
 
 const Users = () => {
   const auth = getAuth(app);
   const { loading, loginUser } = useAuthContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { teams, getTeamsWithoutAuth } = useGetTeams();
   const [targetTeam, setTargetTeam] = useState<TeamType>({
     id: 1,
@@ -68,6 +70,15 @@ const Users = () => {
 
   const closePassModal = useCallback(() => {
     setIsModalOpen(false);
+  }, [isModalOpen]);
+
+  const openEmailModal = useCallback(() => {
+    setIsEmailModalOpen(true);
+    onClose();
+  }, [isEmailModalOpen]);
+
+  const closeEmailModal = useCallback(() => {
+    setIsEmailModalOpen(false);
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -118,10 +129,17 @@ const Users = () => {
             teams={teams}
             loginUser={loginUser}
             openPassModal={openPassModal}
+            openEmailModal={openEmailModal}
           />
           <EditPasswordModal
             isModalOpen={isModalOpen}
             onClose={closePassModal}
+            auth={auth}
+            loginUser={loginUser}
+          />
+          <EditEmailModal
+            isModalOpen={isEmailModalOpen}
+            onClose={closeEmailModal}
             auth={auth}
             loginUser={loginUser}
           />
