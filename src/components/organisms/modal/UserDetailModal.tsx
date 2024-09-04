@@ -18,14 +18,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
-  Text,
 } from "@chakra-ui/react";
-import {
-  Auth,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  updateEmail,
-} from "firebase/auth";
+import { Auth } from "firebase/auth";
 import React, {
   ChangeEvent,
   FC,
@@ -68,7 +62,7 @@ const UserDetailModal: FC<Props> = memo((props) => {
     password: "",
   });
   const { showMessage } = useMessage();
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
   const roles = ["general", "admin"];
 
   useEffect(() => {
@@ -94,6 +88,11 @@ const UserDetailModal: FC<Props> = memo((props) => {
     },
     [editUser, setEditUser]
   );
+
+  const handleClose = () => {
+    clearErrors();
+    onClose();
+  };
 
   const handleOnSubmit = () => {
     const request = async () => {
@@ -139,7 +138,7 @@ const UserDetailModal: FC<Props> = memo((props) => {
   return (
     <>
       {loginUser && (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
           <ModalContent px={4}>
             <ModalHeader as="h1" textAlign="center">

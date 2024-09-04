@@ -73,7 +73,7 @@ const EditScheduleModal: FC<Props> = memo((props) => {
   const { showMessage } = useMessage();
   const auth = getAuth(app);
   const [isDeleteModal, setIsDeleteModal] = useState(false);
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
   const [editSchedule, setEditSchedule] = useState<EditScheduleType>({
     id: 0,
     start_at: "",
@@ -163,23 +163,16 @@ const EditScheduleModal: FC<Props> = memo((props) => {
         endMinutes: format(endDate, "mm"),
       });
     }
-  }, [schedule]);
+  }, [schedule, isOpen]);
+
+  const handleClose = () => {
+    clearErrors();
+    onClose();
+  };
 
   const handleStartChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartDay(e.target.value);
   };
-
-  // const handleEndChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setEndDay(e.target.value);
-  // };
-
-  // const overlapSchedules: scheduleType[] | undefined = allSchedules?.filter(
-  //   (schedule) =>
-  //     schedule.userId == editSchedule.user_id &&
-  //     schedule.id != editSchedule.id &&
-  //     new Date(schedule.startAt) < new Date(editSchedule.end_at) &&
-  //     new Date(schedule.endAt) > new Date(editSchedule.start_at)
-  // );
 
   const timeCheck =
     new Date(editSchedule.start_at) >= new Date(editSchedule.end_at);
@@ -209,13 +202,6 @@ const EditScheduleModal: FC<Props> = memo((props) => {
         if (schedule) {
           if (timeCheck) {
             errorModalOpen("終了時刻が開始時刻より早く設定されています");
-            // } else if (overlapSchedules?.length !== 0) {
-            //   const errorMessage = overlapSchedules?.map(
-            //     (schedule) => schedule.description
-            //   );
-            //   errorModalOpen(
-            //     `同時間帯に "${errorMessage}" が既に登録されています`
-            //   );
           } else {
             const token = await auth.currentUser?.getIdToken(true);
             const data = {
@@ -250,8 +236,16 @@ const EditScheduleModal: FC<Props> = memo((props) => {
               dailySchedules[dailyIndex] = res.data;
               setDailySchedules([...dailySchedules]);
             }
-
             onClose();
+            setEditSchedule({
+              id: 0,
+              start_at: "",
+              end_at: "",
+              is_Locked: false,
+              description: "",
+              user_id: 0,
+              schedule_kind_id: 0,
+            });
             showMessage({ title: "更新しました", status: "success" });
           }
         }
@@ -267,7 +261,7 @@ const EditScheduleModal: FC<Props> = memo((props) => {
     <>
       {!loading && schedule && loginUser && (
         <>
-          <Modal isOpen={isOpen} onClose={onClose}>
+          <Modal isOpen={isOpen} onClose={handleClose}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader m={"auto"} fontSize="2xl">

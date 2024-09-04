@@ -26,15 +26,15 @@ import { ChevronLeftIcon } from "@chakra-ui/icons";
 const SignUp = () => {
   const auth = getAuth(app);
   const router = useRouter();
+  const { teams, getTeamsWithoutAuth } = useGetTeams();
   const [newUser, setNewUser] = useState<NewUserType>({
     name: "",
     email: "",
     password: "",
     role: "general",
-    team_id: 31,
+    team_id: 0,
   });
-  const { loading, loginUser } = useAuthContext();
-  const { teams, getTeamsWithoutAuth } = useGetTeams();
+  const { loginUser } = useAuthContext();
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
@@ -91,11 +91,18 @@ const SignUp = () => {
 
   useEffect(() => {
     getTeamsWithoutAuth();
-  }, []);
+  }, []); // 初回のみデータ取得
+
+  useEffect(() => {
+    if (teams.length > 0 && newUser.team_id === 0) {
+      // 追加: team_idが未設定の場合のみ
+      setNewUser((prev) => ({ ...prev, team_id: teams[0].id }));
+    }
+  }, [teams]); // teamsが変更されたときにのみ実行
 
   return (
     <>
-      {!loading && loginUser == null && (
+      {loginUser == null && (
         <>
           <Flex justify="center" align="center" h="80vh">
             <Box

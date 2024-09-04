@@ -27,7 +27,7 @@ const EditTask = ({ params }: { params: { id: number } }) => {
     color: "",
   });
   const [isDeleteModal, setIsDeleteModal] = useState(false);
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
 
   const handleonChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +120,7 @@ const EditTask = ({ params }: { params: { id: number } }) => {
       }
     };
     getTask();
+    clearErrors();
   }, []);
 
   return (

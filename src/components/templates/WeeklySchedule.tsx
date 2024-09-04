@@ -7,11 +7,16 @@ import { GetUserType } from "@/types/api/user";
 import { ArrowLeftIcon, ArrowRightIcon, LockIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Center,
   Flex,
-  Spacer,
+  Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
-  Tooltip,
+  Th,
+  Thead,
+  Tr,
   useDisclosure,
 } from "@chakra-ui/react";
 import {
@@ -19,6 +24,8 @@ import {
   eachDayOfInterval,
   endOfWeek,
   format,
+  getDate,
+  isToday,
   startOfWeek,
   subDays,
 } from "date-fns";
@@ -79,7 +86,7 @@ const WeeklySchedule: FC<Props> = (props) => {
   const { targetSchedule, isModalOpen, openEditSchedule, closeEditSchedule } =
     useOpenEditSchedule();
   return (
-    <Box maxW="1034px" m="auto">
+    <Box>
       <Flex justify="space-between">
         <Box display="flex">
           <PrimaryButton size="md" color="linkedin" onClick={prevWeek}>
@@ -106,101 +113,131 @@ const WeeklySchedule: FC<Props> = (props) => {
           <Text fontSize={"lg"}>Userを選択してください</Text>
         )}
       </Box>
-      {selectUsers.map((user) => (
-        <Flex mb={4} key={user.id}>
-          <Center border="1px solid" shadow="md" bg="white" mt={1}>
-            <Box
-              display="grid"
-              placeItems="center"
-              textAlign="center"
-              mr="-1px"
-              width={{ base: "100px", md: "130px" }}
-              fontSize="lg"
+      <TableContainer>
+        {selectUsers.map((user) => (
+          <Flex mb={4} key={user.id} shadow="md" bg="white" mt={1}>
+            <Table
+              variant={"simple"}
+              border={"1px solid"}
+              borderColor={"gray.300"}
             >
-              {user.name}
-            </Box>
-
-            <Flex>
-              {dates.map((day, i) => (
-                <Box
-                  key={i}
-                  border="1px solid"
-                  mr="-1px"
-                  my="-1px"
-                  width={{ base: "100px", md: "130px" }}
-                >
-                  <Tooltip
-                    bg="gray.500"
-                    fontWeight="bold"
-                    label="新規予定は日付をクリック"
+              <Thead>
+                <Tr>
+                  <Th
+                    textAlign={"center"}
+                    w={"120px"}
+                    border={"1px solid"}
+                    borderColor={"gray.300"}
                   >
-                    <Box
-                      h="55px"
-                      textAlign="center"
-                      borderTop="solid 1px"
-                      mt="-1px"
-                      borderBottom="dashed 1px"
-                      onClick={() => openSchedule(day, user)}
-                      cursor="pointer"
+                    User
+                  </Th>
+                  {dates.map((date, i) => (
+                    <Th
+                      key={i}
+                      maxW={"200px"}
+                      textAlign={"center"}
+                      borderBottom={"1px solid"}
+                      borderColor={"gray.300"}
+                      onClick={() => openSchedule(date, user)}
+                      cursor={"pointer"}
                     >
-                      <Box textAlign="center">
-                        {format(day, "E", { locale: ja })}
-                      </Box>
-                      {format(day, "M/d")}
-                    </Box>
-                  </Tooltip>
-
-                  {weeklySchedules.map(
-                    (schedule) =>
-                      format(day, "yyyy-MM-dd") ===
-                        format(new Date(schedule.startAt), "yyyy-MM-dd") &&
-                      user.id === schedule.userId && (
-                        <Box
-                          key={schedule.id}
-                          h="55px"
-                          borderBottom="1px solid"
-                          mb="-1px"
-                          cursor="pointer"
-                          onClick={() => {
-                            openEditSchedule(schedule);
-                          }}
-                          bg={schedule.scheduleKind?.color}
-                        >
-                          <Flex justify="center" align="center">
-                            <Text
-                              whiteSpace="nowrap"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
-                            >
-                              {format(new Date(schedule.startAt), "k:mm")} -
-                              {format(new Date(schedule.endAt), "k:mm")}
-                            </Text>
-                            <Box ml={1} mt={-1}>
-                              {schedule.isLocked && (
-                                <LockIcon color="gray.500" />
-                              )}
-                            </Box>
-                          </Flex>
-                          <Text
-                            textAlign="center"
-                            whiteSpace="nowrap"
-                            overflow="hidden"
-                            textOverflow="ellipsis"
-                            px={1}
-                            fontSize="lg"
-                          >
-                            {schedule.description}
-                          </Text>
-                        </Box>
-                      )
-                  )}
-                </Box>
-              ))}
-            </Flex>
-          </Center>
-        </Flex>
-      ))}
-
+                      <Text>{format(date, "E", { locale: ja })}</Text>
+                      <Text
+                        bg={isToday(date) ? "cyan.300" : ""}
+                        borderRadius={"full"}
+                      >
+                        {getDate(date)}
+                      </Text>
+                    </Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Th
+                    fontSize={"md"}
+                    w={"120px"}
+                    textAlign={"center"}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {user.name}
+                  </Th>
+                  {dates.map((date, i) => (
+                    <Td
+                      key={i}
+                      maxW={"200px"}
+                      w={"200px"}
+                      border={"1px solid"}
+                      borderColor={"gray.300"}
+                      p={0}
+                      onClick={() => openSchedule(date, user)}
+                      cursor={"pointer"}
+                    >
+                      {weeklySchedules
+                        .sort((a, b) => {
+                          return (
+                            new Date(a.startAt).getTime() -
+                            new Date(b.startAt).getTime()
+                          );
+                        })
+                        .map(
+                          (schedule) =>
+                            format(date, "yyyy-MM-dd") ===
+                              format(
+                                new Date(schedule.startAt),
+                                "yyyy-MM-dd"
+                              ) &&
+                            user.id === schedule.userId && (
+                              <Box
+                                key={schedule.id}
+                                m={1}
+                                cursor="pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditSchedule(schedule);
+                                }}
+                                bg={schedule.scheduleKind?.color}
+                                textAlign={"center"}
+                              >
+                                <Stack spacing={0.5}>
+                                  <Text>
+                                    {`${format(
+                                      new Date(schedule.startAt),
+                                      "k:mm"
+                                    )} - ${format(
+                                      new Date(schedule.endAt),
+                                      "k:mm"
+                                    )}`}
+                                  </Text>
+                                  <Box ml={1} mt={-1}>
+                                    {schedule.isLocked && (
+                                      <LockIcon color="gray.500" />
+                                    )}
+                                  </Box>
+                                  <Text
+                                    textAlign="center"
+                                    whiteSpace="nowrap"
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    px={1}
+                                    fontSize="lg"
+                                  >
+                                    {schedule.description}
+                                  </Text>
+                                </Stack>
+                              </Box>
+                            )
+                        )}
+                    </Td>
+                  ))}
+                </Tr>
+              </Tbody>
+            </Table>
+          </Flex>
+        ))}
+      </TableContainer>
       <NewScheduleModal
         isOpen={isOpen}
         onClose={onClose}

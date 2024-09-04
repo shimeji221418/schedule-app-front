@@ -26,7 +26,7 @@ const EditTeam = ({ params }: { params: { id: number } }) => {
     name: "",
   });
   const [isDeleteModal, setIsDeleteModal] = useState(false);
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
 
   const handleonChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +63,7 @@ const EditTeam = ({ params }: { params: { id: number } }) => {
       }
     };
     getTeam();
+    clearErrors();
   }, []);
   const handleonSubmit = () => {
     const updateTeam = async () => {

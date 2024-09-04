@@ -22,14 +22,16 @@ import UserDetailModal from "@/components/organisms/modal/UserDetailModal";
 import { useGetTeamUsers } from "@/hooks/useGetTeamUsers";
 import EditPasswordModal from "@/components/organisms/modal/EditPasswordModal";
 import EditEmailModal from "@/components/organisms/modal/EditEmailModal";
+import { useFormContext } from "react-hook-form";
 
 const Users = () => {
   const auth = getAuth(app);
-  const { loading, loginUser } = useAuthContext();
+  const { loginUser } = useAuthContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { teams, getTeamsWithoutAuth } = useGetTeams();
+  const { clearErrors } = useFormContext();
   const [targetTeam, setTargetTeam] = useState<TeamType>({
     id: 1,
     name: "",
@@ -70,6 +72,7 @@ const Users = () => {
 
   const closePassModal = useCallback(() => {
     setIsModalOpen(false);
+    clearErrors();
   }, [isModalOpen]);
 
   const openEmailModal = useCallback(() => {
@@ -79,6 +82,7 @@ const Users = () => {
 
   const closeEmailModal = useCallback(() => {
     setIsEmailModalOpen(false);
+    clearErrors();
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -86,7 +90,7 @@ const Users = () => {
   }, []);
   return (
     <>
-      {!loading && loginUser && (
+      {loginUser && (
         <>
           <InputGroup w="500px" m={"auto"} mt={2} mb={5}>
             <InputLeftAddon

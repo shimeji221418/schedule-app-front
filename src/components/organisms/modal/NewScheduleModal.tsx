@@ -71,7 +71,7 @@ const NewScheduleModal: FC<Props> = memo((props) => {
   } = props;
   const auth = getAuth(app);
   const { loginUser } = useAuthContext();
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
   const { showMessage } = useMessage();
   const { isErrorMessage, message, errorModalOpen, errorModalClose } =
     useErrorMessage();
@@ -138,15 +138,13 @@ const NewScheduleModal: FC<Props> = memo((props) => {
     setNewSchedule({ ...newSchedule, [name]: value });
   };
 
-  // const overlapSchedules: scheduleType[] | undefined = weeklySchedules?.filter(
-  //   (schedule) =>
-  //     schedule.userId == newSchedule.user_id &&
-  //     new Date(schedule.startAt) < new Date(newSchedule.end_at) &&
-  //     new Date(schedule.endAt) > new Date(newSchedule.start_at)
-  // );
-
   const timeCheck =
     new Date(newSchedule.start_at) >= new Date(newSchedule.end_at);
+
+  const handleClose = () => {
+    clearErrors();
+    onClose();
+  };
 
   const handleonSubmit = () => {
     const createSchedule = async () => {
@@ -154,13 +152,6 @@ const NewScheduleModal: FC<Props> = memo((props) => {
         if (loginUser && targetUser) {
           if (timeCheck) {
             errorModalOpen("終了時刻が開始時刻より早く設定されています");
-            // } else if (overlapSchedules?.length !== 0) {
-            //   const errorMessage = overlapSchedules?.map(
-            //     (schedule) => schedule.description
-            //   );
-            //   errorModalOpen(
-            //     `同時間帯に "${errorMessage}" が既に登録されています`
-            //   );
           } else {
             const token = await auth.currentUser?.getIdToken(true);
             const data = {
@@ -192,6 +183,14 @@ const NewScheduleModal: FC<Props> = memo((props) => {
               setMySchedules([...mySchedules, res.data]);
             }
             onClose();
+            setNewSchedule({
+              start_at: "",
+              end_at: "",
+              is_Locked: false,
+              description: "",
+              user_id: 0,
+              schedule_kind_id: 0,
+            });
             showMessage({ title: "新規予定を作成しました", status: "success" });
           }
         }
@@ -205,7 +204,7 @@ const NewScheduleModal: FC<Props> = memo((props) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader m={"auto"} fontSize="2xl">
@@ -352,6 +351,7 @@ const NewScheduleModal: FC<Props> = memo((props) => {
                   <Textarea
                     name="description"
                     placeholder="詳細"
+                    value={newSchedule.description}
                     rows={1}
                     onChange={handleonChange}
                   />

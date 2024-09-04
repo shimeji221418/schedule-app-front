@@ -79,6 +79,7 @@ const DeleteUser = () => {
     } catch (e: any) {
       console.log(e);
     }
+    console.log(loginUser?.id, targetUser.id);
   };
 
   useEffect(() => {

@@ -79,7 +79,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         if (auth.currentUser) {
           const res = await BaseClientWithAuth(config);
           setLoginUser(res.data);
-          console.log(res.data);
         }
         setLoading(false);
       } catch (e) {
@@ -88,6 +87,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     };
 
     const unsubscribed = onAuthStateChanged(auth, (resultUser) => {
+      console.log(resultUser?.displayName);
       if (isLoginOrSignUpPage && resultUser) {
         router.push("/");
       }
