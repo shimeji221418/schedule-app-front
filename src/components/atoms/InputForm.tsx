@@ -41,7 +41,7 @@ const InputForm: FC<Props> = memo((props) => {
 
   useEffect(() => {
     setValue(`${name}`, value ? `${value}` : "");
-  }, []);
+  }, [value]);
 
   return (
     <>

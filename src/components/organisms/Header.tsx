@@ -64,18 +64,27 @@ const Header: FC = memo(() => {
               <HStack spacing={6} display={{ base: "none", md: "flex" }}>
                 {admin && (
                   <Link href="/admin">
-                    <Text _hover={{ textDecoration: "underline" }}>
+                    <Text
+                      fontWeight={"bold"}
+                      _hover={{ textDecoration: "underline" }}
+                    >
                       管理者ページ
                     </Text>
                   </Link>
                 )}
                 <Link href="/users">
-                  <Text _hover={{ textDecoration: "underline" }}>
+                  <Text
+                    fontWeight={"bold"}
+                    _hover={{ textDecoration: "underline" }}
+                  >
                     ユーザー一覧
                   </Text>
                 </Link>
                 <Link href="/schedules">
-                  <Text _hover={{ textDecoration: "underline" }}>
+                  <Text
+                    fontWeight={"bold"}
+                    _hover={{ textDecoration: "underline" }}
+                  >
                     個人スケジュール
                   </Text>
                 </Link>

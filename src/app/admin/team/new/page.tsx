@@ -37,6 +37,7 @@ const NewTeam = () => {
 
   useEffect(() => {
     getTeamsWithoutAuth();
+    clearErrors();
   }, []);
 
   const handleonSubmit = () => {
@@ -67,7 +68,7 @@ const NewTeam = () => {
     createTeam();
   };
 
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
   return (
     <>
       {!loading && loginUser && loginUser!.role === "admin" ? (

@@ -45,7 +45,7 @@ const SelectForm: FC<Props> = memo((props) => {
 
   useEffect(() => {
     setValue(`${name}`, value);
-  }, []);
+  }, [value]);
   return (
     <>
       <InputGroup>

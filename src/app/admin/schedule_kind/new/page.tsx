@@ -46,6 +46,7 @@ const Newtask = () => {
 
   useEffect(() => {
     getTask();
+    clearErrors();
   }, []);
 
   const handleonSubmit = () => {
@@ -79,7 +80,7 @@ const Newtask = () => {
     createScheduleKind();
   };
 
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, clearErrors } = useFormContext();
   return (
     <>
       {loginUser && loginUser!.role === "admin" ? (
