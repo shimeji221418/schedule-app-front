@@ -33,7 +33,7 @@ const Users = () => {
   const { teams, getTeamsWithoutAuth } = useGetTeams();
   const { clearErrors } = useFormContext();
   const [targetTeam, setTargetTeam] = useState<TeamType>({
-    id: 1,
+    id: 0,
     name: "",
   });
   const [targetUser, setTargetUser] = useState<GetUserType>({
@@ -101,7 +101,7 @@ const Users = () => {
               fontWeight={"bold"}
             />
             <Select name="id" onChange={handleSelectChange}>
-              <option key={0} value={1}>
+              <option key={0} value={0}>
                 ALL
               </option>
               {teams && (
