@@ -52,7 +52,7 @@ export const useGetTeamUsers = (teamId: number) => {
     if (loginUser && teamId != 0) {
       getTeamUsers({ team_id: teamId });
     }
-    if (loginUser && teamId == 1) {
+    if (loginUser && teamId == 0) {
       GetAllUsers();
     }
   }, [teamId]);
