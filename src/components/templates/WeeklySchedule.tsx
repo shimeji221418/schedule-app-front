@@ -156,7 +156,8 @@ const WeeklySchedule: FC<Props> = (props) => {
                 <Tr>
                   <Th
                     fontSize={"md"}
-                    w={"120px"}
+                    maxW={"200px"}
+                    minW={"200px"}
                     textAlign={"center"}
                     whiteSpace="nowrap"
                     overflow="hidden"
